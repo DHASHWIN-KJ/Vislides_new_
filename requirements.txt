@@ -1,0 +1,100 @@
+# KJD ViSlides - Dependencies Overview
+# 
+# This project uses Node.js/npm for package management, not Python pip.
+# The dependencies listed below are for reference purposes.
+# 
+# To install dependencies, use:
+#   Backend:  cd backend && npm install
+#   Frontend: cd frontend && npm install
+#
+
+# ============================================
+# BACKEND DEPENDENCIES
+# ============================================
+# 
+# Core Framework
+# - express@^5.2.1              - Web framework
+# - socket.io@^4.8.3            - Real-time communication
+#
+# Database
+# - mongoose@^9.3.3             - MongoDB ODM
+#
+# Authentication & Security
+# - jsonwebtoken@^9.0.3         - JWT token generation
+# - bcryptjs@^3.0.3             - Password hashing
+# - google-auth-library@^10.6.2 - Google OAuth
+# - helmet@^8.1.0               - HTTP headers security
+#
+# API & Validation
+# - express-validator@^7.3.2    - Input validation
+# - cors@^2.8.6                 - Cross-origin requests
+# - cookie-parser@^1.4.7        - Cookie parsing
+#
+# File Handling
+# - multer@^2.1.1               - File uploads
+#
+# AI & Services
+# - @google/generative-ai@^0.24.1 - Google Gemini AI
+# - nodemailer@^8.0.4           - Email service
+#
+# Utilities
+# - dotenv@^17.4.0              - Environment variables
+# - morgan@^1.10.1              - HTTP request logging
+# - qrcode@^1.5.4               - QR code generation
+#
+# Development Dependencies
+# - nodemon@^3.1.14             - Auto-reload development
+# - ts-node@^10.9.2             - TypeScript runtime
+# - typescript@^6.0.2           - TypeScript compiler
+# - @types/* packages           - TypeScript type definitions
+
+# ============================================
+# FRONTEND DEPENDENCIES
+# ============================================
+#
+# Core Framework
+# - react@^19.2.4               - UI framework
+# - react-dom@^19.2.4           - React DOM renderer
+# - react-router-dom@^7.13.2    - Client-side routing
+#
+# Real-time & HTTP
+# - socket.io-client@^4.8.3     - WebSocket client
+# - axios@^1.14.0               - HTTP client
+#
+# Authentication
+# - @react-oauth/google@^0.13.4 - Google OAuth component
+# - jwt-decode@^4.0.0           - JWT token decoding
+#
+# UI & Effects
+# - canvas-confetti@^1.9.4      - Confetti animations
+# - @hello-pangea/dnd@^18.0.1   - Drag and drop
+#
+# Export & Document
+# - html2canvas@^1.4.1          - HTML to canvas
+# - jspdf@^4.2.1                - PDF generation
+#
+# Development & Build
+# - vite@^8.0.1                 - Build tool
+# - @vitejs/plugin-react@^6.0.1 - React plugin for Vite
+# - typescript~5.9.3            - TypeScript compiler
+# - eslint@^9.39.4              - Code linting
+# - @types/* packages           - TypeScript type definitions
+
+# ============================================
+# INSTALLATION INSTRUCTIONS
+# ============================================
+#
+# Backend:
+#   1. cd backend
+#   2. npm install
+#   3. npm run dev
+#
+# Frontend:
+#   1. cd frontend
+#   2. npm install
+#   3. npm run dev
+#
+# For production builds:
+#   Backend:  npm run build && npm start
+#   Frontend: npm run build (creates dist/ folder)
+
