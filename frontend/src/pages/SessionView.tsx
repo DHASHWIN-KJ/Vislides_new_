@@ -248,7 +248,7 @@ const SessionView: React.FC = () => {
         };
 
         fetchData();
-    }, [code, navigate]);
+    }, [code, navigate, user]);
 
     // 5-Second Auto-Refresh Logic for Teacher Answers
     useEffect(() => {
@@ -275,7 +275,7 @@ const SessionView: React.FC = () => {
             } catch (err) {
                 console.log('Polling error:', err);
             }
-        }, 3000); // Poll every 3 seconds
+        }, 10000); // Poll every 10 seconds
 
         return () => clearInterval(refreshInterval);
     }, [session]);
@@ -491,182 +491,277 @@ const SessionView: React.FC = () => {
     return (
         <div style={{ minHeight: '100vh', background: 'var(--color-bg)' }}>
             {/* Session Header */}
-            <nav style={{
+            {/* Session Header */}
+        <nav
+            style={{
                 background: 'var(--color-bg-secondary)',
-                opacity: 0.95,
-                backdropFilter: 'blur(10px)',
                 borderBottom: '1px solid var(--color-surface)',
                 padding: '1rem 2rem',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
                 position: 'sticky',
                 top: 0,
                 zIndex: 100
-            }}>
+            }}
+        >
+            {/* TOP ROW */}
+            <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    gap: '2rem',
+                    minHeight: '110px'
+                }}
+            >
+                {/* LEFT SIDE */}
                 <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                        <div style={{ fontSize: '0.8rem', color: 'var(--color-primary-light)', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                            Live Session
+                    <div
+                        style={{
+                            fontSize: '0.8rem',
+                            color: 'var(--color-primary-light)',
+                            fontWeight: '700',
+                            textTransform: 'uppercase',
+                            letterSpacing: '1px'
+                        }}
+                    >
+                        LIVE SESSION
+                        <div
+                            style={{
+                                fontSize: '2rem',
+                                fontWeight: '800',
+                                color: '#111827',
+                                marginTop: '0.5rem'
+                            }}
+                        >
+                            {session.title}
                         </div>
-                        {session.status === 'paused' && (
-                            <span style={{
-                                background: 'rgba(245, 158, 11, 0.2)',
-                                color: '#f59e0b',
-                                padding: '0.2rem 0.6rem',
-                                borderRadius: 'var(--radius-sm)',
-                                fontSize: '0.7rem',
-                                fontWeight: '700',
-                                textTransform: 'uppercase'
-                            }}>
-                                PAUSED
-                            </span>
-                        )}
                     </div>
-                    <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{session.title}</div>
+        
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                    <div className="bento-box" style={{ padding: '0.4rem 1rem', borderRadius: 'var(--radius-md)', margin: 0, border: '1px solid var(--color-primary-light)' }}>
-                        <span style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', display: 'block', lineHeight: 1 }}>CODE</span>
-                        <span style={{ fontSize: '1.1rem', fontWeight: '800', color: 'var(--color-primary-light)' }}>{session.code}</span>
+                {/* RIGHT SIDE */}
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '1rem',
+                        flexWrap: 'wrap',
+                        justifyContent: 'flex-end'
+                    }}
+                >
+                    {/* SESSION CODE */}
+                    <div
+                        className="bento-box"
+                        style={{
+                            padding: '0.7rem 1rem',
+                            borderRadius: '16px',
+                            border: '1px solid var(--color-primary-light)',
+                            textAlign: 'center'
+                        }}
+                    >
+                        <div
+                            style={{
+                                fontSize: '0.7rem',
+                                color: 'var(--color-text-muted)'
+                            }}
+                        >
+                            CODE
+                        </div>
+        
+                        <div
+                            style={{
+                                fontSize: '1.3rem',
+                                fontWeight: '800',
+                                color: 'var(--color-primary-light)'
+                            }}
+                        >
+                            {session.code}
+                        </div>
                     </div>
-
-
-
-                    {user?.role?.toLowerCase() === 'teacher' ? (
-                        <div style={{ display: 'flex', gap: '0.75rem' }}>
-                            <button
-                                onClick={() => setShowQRModal(true)}
-                                className="btn btn-secondary"
+        
+                    {/* QR */}
+                    <button
+                        onClick={() => setShowQRModal(true)}
+                        style={{
+                            background: 'rgba(255,255,255,0.75)',
+                            border: '1px solid rgba(255,255,255,0.4)',
+                            color: '#0f172a',
+                            borderRadius: '16px',
+                            padding: '0.9rem 1.3rem',
+                            fontWeight: 700,
+                            fontSize: '0.95rem',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem'
+                        }}
+                    >
+                        📱 QR
+                    </button>
+        
+                    {/* EXPORT */}
+                    <div style={{ position: 'relative' }}>
+                        <button
+                            onClick={() => setShowExportOptions(!showExportOptions)}
+                            style={{
+                                background: 'rgba(255,255,255,0.75)',
+                                border: '1px solid rgba(255,255,255,0.4)',
+                                color: '#0f172a',
+                                borderRadius: '16px',
+                                padding: '0.9rem 1.3rem',
+                                fontWeight: 700,
+                                fontSize: '0.95rem',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.5rem'
+                            }}
+                        >
+                            📄 Export
+                        </button>
+        
+                        {showExportOptions && (
+                            <div
                                 style={{
-                                    background: 'rgba(236, 72, 153, 0.1)',
-                                    color: '#ec4899',
-                                    borderColor: 'rgba(236, 72, 153, 0.2)',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.4rem'
+                                    position: 'absolute',
+                                    top: '110%',
+                                    right: 0,
+                                    background: '#1e293b',
+                                    borderRadius: '14px',
+                                    overflow: 'hidden',
+                                    minWidth: '180px',
+                                    border: '1px solid rgba(255,255,255,0.08)',
+                                    zIndex: 1000
                                 }}
-                                title="Show Join Code"
                             >
-                                <span style={{ fontSize: '1.2rem' }}>📱</span>
-                            </button>
-                            <div style={{ position: 'relative' }}>
                                 <button
-                                    onClick={() => setShowExportOptions(!showExportOptions)}
-                                    className="btn btn-secondary"
+                                    onClick={() => {
+                                        handleExportPDF();
+                                        setShowExportOptions(false);
+                                    }}
                                     style={{
-                                        background: 'rgba(99, 102, 241, 0.1)',
-                                        color: 'var(--color-primary-light)',
-                                        borderColor: 'rgba(99, 102, 241, 0.2)',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '0.4rem'
+                                        width: '100%',
+                                        padding: '0.9rem 1rem',
+                                        border: 'none',
+                                        background: 'transparent',
+                                        textAlign: 'left',
+                                        cursor: 'pointer',
+                                        color: '#fff'
                                     }}
                                 >
-                                    📄 Export ▾
+                                    📄 PDF Document
                                 </button>
-
-                                {showExportOptions && (
-                                    <div style={{
-                                        position: 'absolute',
-                                        top: '100%',
-                                        left: 0,
-                                        marginTop: '0.5rem',
-                                        background: 'var(--color-surface)',
-                                        border: '1px solid rgba(255,255,255,0.1)',
-                                        borderRadius: 'var(--radius-sm)',
-                                        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.5)',
-                                        zIndex: 1000,
-                                        minWidth: '150px',
-                                        overflow: 'hidden'
-                                    }}>
-                                        <button
-                                            onClick={() => {
-                                                handleExportPDF();
-                                                setShowExportOptions(false);
-                                            }}
-                                            style={{ width: '100%', textAlign: 'left', padding: '0.75rem 1rem', background: 'none', border: 'none', color: 'var(--color-text)', cursor: 'pointer', fontSize: '0.85rem' }}
-                                            onMouseOver={(e) => e.currentTarget.style.background = 'var(--color-surface-hover)'}
-                                            onMouseOut={(e) => e.currentTarget.style.background = 'none'}
-                                        >
-                                            📄 PDF Document
-                                        </button>
-                                        <button
-                                            onClick={exportToCSV}
-                                            style={{ width: '100%', textAlign: 'left', padding: '0.75rem 1rem', background: 'none', border: 'none', color: 'var(--color-text)', cursor: 'pointer', fontSize: '0.85rem' }}
-                                            onMouseOver={(e) => e.currentTarget.style.background = 'var(--color-surface-hover)'}
-                                            onMouseOut={(e) => e.currentTarget.style.background = 'none'}
-                                        >
-                                            📊 CSV Spreadsheet
-                                        </button>
-                                    </div>
-                                )}
+        
+                                <button
+                                    onClick={exportToCSV}
+                                    style={{
+                                        width: '100%',
+                                        padding: '0.9rem 1rem',
+                                        border: 'none',
+                                        background: 'transparent',
+                                        textAlign: 'left',
+                                        cursor: 'pointer',
+                                        color: '#fff'
+                                    }}
+                                >
+                                    📊 CSV Spreadsheet
+                                </button>
                             </div>
-                            <button
-                                onClick={() => setShowPollCreator(!showPollCreator)}
-                                className="btn btn-secondary"
-                                style={{
-                                    background: showPollCreator ? 'var(--color-primary)' : 'rgba(99, 102, 241, 0.1)',
-                                    color: showPollCreator ? 'white' : 'var(--color-primary-light)',
-                                    borderColor: 'rgba(99, 102, 241, 0.2)'
-                                }}
-                                title="Manage Polls"
-                            >
-                                📊 Poll
-                            </button>
-                            <button
-                                onClick={handlePauseSession}
-                                className="btn btn-secondary"
-                                style={{
-                                    background: session.status === 'paused' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)',
-                                    color: session.status === 'paused' ? '#10b981' : '#f59e0b',
-                                    borderColor: session.status === 'paused' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(245, 158, 11, 0.2)'
-                                }}
-                            >
-                                {session.status === 'paused' ? 'Resume' : 'Pause'}
-                            </button>
-                            <button
-                                onClick={() => setShowEngagement(!showEngagement)}
-                                className="btn btn-secondary"
-                                style={{
-                                    background: showEngagement ? 'var(--color-primary)' : 'rgba(99, 102, 241, 0.1)',
-                                    color: showEngagement ? 'white' : 'var(--color-primary-light)',
-                                    borderColor: 'rgba(99, 102, 241, 0.2)'
-                                }}
-                                title="View Student Engagement"
-                            >
-                                📊 Engagement
-                            </button>
-                            <button
-                                onClick={triggerPulseCheck}
-                                className="btn btn-secondary"
-                                style={{ background: 'rgba(245, 158, 11, 0.1)', color: 'var(--color-warning)', borderColor: 'rgba(245, 158, 11, 0.2)' }}
-                                title="Check if students are paying attention"
-                            >
-                                🔥 Pulse Check
-                            </button>
-                            <button
-                                onClick={() => {
-                                    setShowWhiteboard(true);
-                                    socketService.emitWhiteboardOpen(code || '');
-                                }}
-                                className="btn btn-secondary"
-                                style={{ background: 'rgba(99, 102, 241, 0.1)', color: 'var(--color-primary-light)', borderColor: 'rgba(99, 102, 241, 0.2)' }}
-                            >
-                                Open Whiteboard
-                            </button>
-                            <button onClick={handleEndSession} className="btn btn-secondary" style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', borderColor: 'rgba(239, 68, 68, 0.2)' }}>
-                                End Session
-                            </button>
-                        </div>
+                        )}
+                    </div>
+                {/* END SESSION */}
+                    {user?.role?.toLowerCase() === 'teacher' ? (
+                        <button
+                            onClick={handleEndSession}
+                            style={{
+                                background: 'rgba(239,68,68,0.12)',
+                                border: '1px solid rgba(239,68,68,0.3)',
+                                color: '#ff6b6b',
+                                borderRadius: '14px',
+                                padding: '0.9rem 1.4rem',
+                                fontWeight: 700,
+                                cursor: 'pointer'
+                            }}
+                        >
+                            End Session
+                        </button>
                     ) : (
-                        <button onClick={handleLeaveSession} className="btn btn-secondary">
+                        <button
+                            onClick={handleLeaveSession}
+                            style={{
+                                background: 'rgba(239,68,68,0.12)',
+                                border: '1px solid rgba(239,68,68,0.3)',
+                                color: '#ef4444',
+                                borderRadius: '14px',
+                                padding: '0.9rem 1.2rem',
+                                fontWeight: 700,
+                                cursor: 'pointer'
+                            }}
+                        >
                             Leave
                         </button>
                     )}
                 </div>
-            </nav >
+            </div>
+        </nav>
+        <div
+            style={{
+                display: 'flex',
+                height: 'calc(100vh - 90px)'
+            }}
+        >
+            {/* LEFT SIDEBAR */}
+                {isTeacher && (
+                    <aside
+                        style={{
+                            width: '250px',
+                            background: 'var(--color-bg-secondary)',
+                            borderRight: '1px solid rgba(255,255,255,0.08)',
+                            padding: '1.5rem',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '1rem'
+                        }}
+                    >
+                        <h3
+                            style={{
+                                fontSize: '0.9rem',
+                                textTransform: 'uppercase',
+                                letterSpacing: '1px',
+                                color: 'var(--color-text-muted)',
+                                marginBottom: '1rem'
+                            }}
+                        >
+                            Quick Actions
+                        </h3>
+                
+                        <button onClick={() => setShowPollCreator(!showPollCreator)} className="btn btn-primary">
+                            📊 Poll
+                        </button>
+                                
+                        <button onClick={handlePauseSession} className="btn btn-secondary">
+                            {session?.status === 'paused'? '▶️ Resume' : '⏸ Pause'}
+                        </button>
+                
+                                        <button onClick={() => setShowEngagement(!showEngagement)} className="btn btn-secondary">
+                            📈 Engagement
+                                        </button>
+                
+                                        <button onClick={triggerPulseCheck} className="btn btn-secondary">
+                                            🔥 Pulse
+                        </button>
+                
+                        <button
+                            onClick={() => {
+                                setShowWhiteboard(true);
+                                socketService.emitWhiteboardOpen(code || '');
+                                            }}
+                            className="btn btn-secondary"
+                                        >
+                            ✏️ Whiteboard
+                        </button>
+                    </aside>
+                )}
+                    
             {error && <div className="container" style={{ marginTop: '1rem' }}><div className="alert alert-error">{error}</div></div>}
 
             {showWhiteboard && (
@@ -681,13 +776,14 @@ const SessionView: React.FC = () => {
             )}
 
             {/* Main Content Area - 3 Column Layout */}
-            <main style={{
-                height: 'calc(100vh - 74px)', // Adjust based on navbar height
-                display: 'flex',
-                overflow: 'hidden'
-            }}>
-
-
+            <main
+                style={{
+                    flex: 1,
+                    display: 'flex',
+                    overflow: 'hidden'
+                }}
+            >
+                
                 {/* Center Column: Spotlight / Slide View */}
                 <section style={{
                     flex: 1,
@@ -813,7 +909,7 @@ const SessionView: React.FC = () => {
                             top: '-3rem',
                             left: '50%',
                             transform: 'translateX(-50%)',
-                            color: 'var(--color-text-muted)',
+                            color: '#ffffff',
                             fontSize: '0.9rem',
                             fontWeight: '500',
                             zIndex: 10,
@@ -1285,6 +1381,7 @@ const SessionView: React.FC = () => {
                 </div>
             )}
         </div >
+        </div>
     );
 };
 

@@ -4,6 +4,7 @@ export interface Assignment {
     _id: string;
     title: string;
     description: string;
+    submissionType?: 'text' | 'file' | 'both';
     teacher: {
         _id: string;
         name: string;

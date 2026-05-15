@@ -20,11 +20,18 @@ const Assignments: React.FC = () => {
     const isTeacher = user?.role?.toLowerCase() === 'teacher';
 
     // Form state for creating assignment
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<{
+        title: string;
+        description: string;
+        maxMarks: number;
+        deadline: string;
+        submissionType: 'file' | 'text' | 'both';
+    }>({
         title: '',
         description: '',
         maxMarks: 100,
-        deadline: ''
+        deadline: '',
+        submissionType: 'text'
     });
 
     useEffect(() => {
@@ -61,7 +68,13 @@ const Assignments: React.FC = () => {
             if (response.success) {
                 setToast({ message: 'Assignment created successfully!', type: 'success' });
                 setShowCreateForm(false);
-                setFormData({ title: '', description: '', maxMarks: 100, deadline: '' });
+                setFormData({
+                    title: '',
+                    description: '',
+                    maxMarks: 100,
+                    deadline: '',
+                submissionType: 'text'
+                });
                 fetchData();
             }
         } catch (error) {
@@ -80,7 +93,13 @@ const Assignments: React.FC = () => {
                 setToast({ message: 'Assignment updated successfully!', type: 'success' });
                 setShowEditModal(false);
                 setSelectedAssignment(null);
-                setFormData({ title: '', description: '', maxMarks: 100, deadline: '' });
+                setFormData({
+                    title: '',
+                    description: '',
+                    maxMarks: 100,
+                    deadline: '',
+                    submissionType: 'text'
+                });
                 fetchData();
             }
         } catch (error) {
@@ -112,7 +131,8 @@ const Assignments: React.FC = () => {
             title: assignment.title,
             description: assignment.description,
             maxMarks: assignment.maxMarks,
-            deadline: new Date(assignment.deadline).toISOString().slice(0, 16)
+            deadline: new Date(assignment.deadline).toISOString().slice(0, 16),
+            submissionType: assignment.submissionType || 'text'
         });
         setShowEditModal(true);
     };
@@ -197,6 +217,24 @@ const Assignments: React.FC = () => {
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                     required
                                 />
+                            </div>
+                            <div style={{ marginBottom: '1rem' }}>
+                                 <label className="form-label">Submission Requirement</label>
+
+                                <select
+                                    className="form-input"
+                                    value={formData.submissionType}
+                                    onChange={(e) =>
+                                        setFormData({
+                                            ...formData,
+                                            submissionType: e.target.value as 'file' | 'text' | 'both'
+                                        })
+                                    }
+                                >
+                                    <option value="text">📝 Text Only</option>
+                                    <option value="file">📎 PDF Only</option>
+                                    <option value="both">📝📎 Both Text & PDF</option>
+                                </select>
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
                                 <div>
@@ -293,6 +331,29 @@ const Assignments: React.FC = () => {
                                                 </span>
                                                 {isTeacher && <span>👤 By: {assignment.teacher.name}</span>}
                                             </div>
+                                            <div
+                                                style={{
+                                                    marginTop: '1rem',
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                    gap: '0.5rem',
+                                                    padding: '0.45rem 0.9rem',
+                                                    borderRadius: '999px',
+                                                    background: 'rgba(20,184,166,0.12)',
+                                                    color: '#0f766e',
+                                                    fontWeight: '600',
+                                                    fontSize: '0.82rem',
+                                                    border: '1px solid rgba(20,184,166,0.15)'
+                                                }}
+                                            >
+                                                📌 Required:
+
+                                                {assignment.submissionType === 'text' && ' Text Answer'}
+
+                                                {assignment.submissionType === 'file' && ' File Upload'}
+
+                                                {assignment.submissionType === 'both' && ' Text + File Upload'}
+                                            </div>
                                             {isTeacher && (
                                                 <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
                                                     <button
@@ -375,6 +436,7 @@ const Assignments: React.FC = () => {
                                         required
                                     />
                                 </div>
+
                                 <div style={{ marginBottom: '1rem' }}>
                                     <label className="form-label">Description</label>
                                     <textarea
@@ -385,34 +447,84 @@ const Assignments: React.FC = () => {
                                         required
                                     />
                                 </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
+                            
+                                {/* Submission Requirement */}
+                                <div style={{ marginBottom: '1rem' }}>
+                                    <label className="form-label">Submission Requirement</label>
+                            
+                                    <select
+                                        className="form-input"
+                                        value={formData.submissionType}
+                                        onChange={(e) =>
+                                            setFormData({
+                                                ...formData,
+                                                submissionType: e.target.value as 'file' | 'text' | 'both'
+                                            })
+                                        }
+                                    >
+                                        <option value="text">📝 Text Answer</option>
+                                        <option value="file">📎 File Upload</option>
+                                        <option value="both">📝📎 Text + File Upload</option>
+                                    </select>
+                                </div>
+
+                                <div
+                                    style={{
+                                        display: 'grid',
+                                        gridTemplateColumns: '1fr 1fr',
+                                        gap: '1rem',
+                                        marginBottom: '1.5rem'
+                                    }}
+                                >
                                     <div>
                                         <label className="form-label">Max Marks</label>
                                         <input
                                             type="number"
                                             className="form-input"
                                             value={formData.maxMarks}
-                                            onChange={(e) => setFormData({ ...formData, maxMarks: parseInt(e.target.value) || 0 })}
+                                            onChange={(e) =>
+                                                setFormData({
+                                                    ...formData,
+                                                    maxMarks: parseInt(e.target.value) || 0
+                                                })
+                                            }
                                             min="1"
                                             required
                                         />
                                     </div>
+
                                     <div>
                                         <label className="form-label">Deadline</label>
                                         <input
                                             type="datetime-local"
                                             className="form-input"
                                             value={formData.deadline}
-                                            onChange={(e) => setFormData({ ...formData, deadline: e.target.value })}
+                                            onChange={(e) =>
+                                                setFormData({
+                                                    ...formData,
+                                                    deadline: e.target.value
+                                                })
+                                            }
                                             required
                                         />
                                     </div>
                                 </div>
+                            
                                 <div style={{ display: 'flex', gap: '1rem' }}>
-                                    <button type="button" onClick={() => setShowEditModal(false)} className="btn btn-secondary" style={{ flex: 1 }}>
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowEditModal(false)}
+                                        className="btn btn-secondary"
+                                        style={{ flex: 1 }}
+                                    >
                                         Cancel
                                     </button>
-                                    <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
+                            
+                                    <button
+                                        type="submit"
+                                        className="btn btn-primary"
+                                        style={{ flex: 1 }}
+                                    >
                                         Update Assignment
                                     </button>
                                 </div>

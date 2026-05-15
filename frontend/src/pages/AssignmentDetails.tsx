@@ -232,27 +232,39 @@ const AssignmentDetails: React.FC = () => {
                                 <h3 style={{ marginBottom: '1.5rem' }}>Submit Assignment</h3>
                                 <form onSubmit={handleSubmit}>
                                     <div style={{ marginBottom: '1.5rem' }}>
-                                        <label className="form-label">Submission Text *</label>
+                                        <label className="form-label">
+                                            Submission Text {assignment.submissionType === 'text' ? '*' : '(Optional)'}
+                                        </label>
                                         <textarea
                                             className="form-input"
                                             rows={8}
                                             value={submissionText}
                                             onChange={(e) => setSubmissionText(e.target.value)}
                                             placeholder="Enter your assignment submission here..."
-                                            required
+                                            required={assignment.submissionType === 'text'}
                                         />
                                     </div>
                                     <div style={{ marginBottom: '1.5rem' }}>
-                                        <label className="form-label">PDF URL (Optional)</label>
+                                        <label className="form-label">
+                                            PDF URL {assignment.submissionType === 'file' ? '*' : '(Optional)'}
+                                        </label>
+
                                         <input
                                             type="url"
                                             className="form-input"
                                             value={pdfUrl}
                                             onChange={(e) => setPdfUrl(e.target.value)}
                                             placeholder="https://example.com/your-file.pdf"
+                                            required={assignment.submissionType === 'file'}
                                         />
-                                        <small style={{ color: 'var(--color-text-muted)', fontSize: '0.8rem' }}>
-                                            Upload your PDF to a cloud service (Google Drive, Dropbox) and paste the link here
+
+                                        <small
+                                            style={{
+                                                color: 'var(--color-text-muted)',
+                                                fontSize: '0.8rem'
+                                            }}
+                                        >
+                                            Upload your PDF to Google Drive or Dropbox and paste the link here
                                         </small>
                                     </div>
                                     <button type="submit" className="btn btn-primary" disabled={submitting}>
@@ -380,17 +392,28 @@ const AssignmentDetails: React.FC = () => {
                             border: '1px solid rgba(255, 255, 255, 0.1)',
                             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
                         }} onClick={(e) => e.stopPropagation()}>
-                            <h3 style={{ marginBottom: '1.5rem' }}>Grade Submission</h3>
-                            <p style={{ marginBottom: '1rem', color: 'var(--color-text-secondary)' }}>
+                            <h3
+                                style={{
+                                    marginBottom: '1.5rem',
+                                    color: '#ffffff'
+                                }}
+                            >
+                               Grade Submission
+                            </h3>
+                            <p style={{ marginBottom: '1rem', color: '#ffffff' }}>
                                 Student: <strong>{gradingSubmission.student.name}</strong>
                             </p>
 
                             <form onSubmit={handleGrade}>
                                 <div style={{ marginBottom: '1.5rem' }}>
-                                    <label className="form-label">Marks Obtained (out of {assignment.maxMarks})</label>
+                                    <label className="form-label"
+                                    style={{ color: '#ffffff' }}>
+                                        Marks Obtained (out of {assignment.maxMarks})
+                                    </label>
                                     <input
                                         type="number"
                                         className="form-input"
+                                        style={{ color: '#ffffff' }}
                                         value={marks}
                                         onChange={(e) => setMarks(e.target.value === '' ? 0 : parseInt(e.target.value) || 0)}
                                         min="0"
@@ -399,9 +422,15 @@ const AssignmentDetails: React.FC = () => {
                                     />
                                 </div>
                                 <div style={{ marginBottom: '1.5rem' }}>
-                                    <label className="form-label">Feedback</label>
+                                    <label 
+                                        className="form-label"
+                                        style={{ color: '#ffffff' }}
+                                        >
+                                            Feedback
+                                    </label>
                                     <textarea
                                         className="form-input"
+                                        style={{ color: '#ffffff' }}
                                         rows={4}
                                         value={feedback}
                                         onChange={(e) => setFeedback(e.target.value)}
